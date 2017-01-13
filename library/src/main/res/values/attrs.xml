@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="FrameAnimationView">
+        <attr name="formatFilePath" format="string"></attr>
+        <attr name="frameCount" format="integer"></attr>
+        <attr name="frameDuration" format="integer"></attr>
+        <attr name="speedHand" format="integer"></attr>
+        <attr name="agentSearch" format="boolean"></attr>
+        <attr name="autoPlay" format="boolean"></attr>
+        <attr name="scaleType" format="enum">
+            <enum name="FIT_XY" value="0"/>
+            <enum name="FIT_CENTER" value="1"/>
+            <enum name="CENTER" value="2"/>
+        </attr>
+    </declare-styleable>
+</resources>
