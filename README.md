@@ -1,7 +1,8 @@
 #FrameAnimationView
 
 #效果图
-
+![name](https://raw.githubusercontent.com/wcl9900/FrameAnimationView/master/frameanimationview.gif)
+    
 #使用方式
     1.对象创建
        frameAnimationView = new FrameAnimationView(this, "image/pi_%d.jpg", 20, true);
