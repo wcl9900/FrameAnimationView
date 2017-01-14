@@ -57,8 +57,6 @@ public class MainActivity extends Activity {
         frameAnimationView.setFingerGestureEnable(checkBoxFinger.isChecked());
         frameAnimationView.setOnFramePlayListener(framePlayListener);
         frameAnimationView.setRepeat(true);
-
-        frameAnimationView = new FrameAnimationView(this, "image/pi_%d.jpg", 20, true);
     }
 
     private AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {

@@ -54,8 +54,9 @@
         android:id="@+id/tv_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:textSize="20dp"
+        android:lines="2"
+        android:padding="6dp"
+        android:textSize="18dp"
         android:textStyle="bold"
         android:text="Info"/>
 
@@ -65,5 +66,6 @@
         android:layout_height="match_parent"
         android:background="@android:color/black"
         app:formatFilePath="image/pi_%d.jpg"
-        app:scaleType="FIT_CENTER"/>
+        app:scaleType="FIT_CENTER"
+        app:autoPlay="false"/>
 </LinearLayout>

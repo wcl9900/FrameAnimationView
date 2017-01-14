@@ -26,11 +26,10 @@ import java.io.IOException;
  *
  */
 public class FrameAnimationView extends View implements OnGestureListener, OnTouchListener{
+	private String TAG = "FrameAnimationView";
 
 	public enum FramePlayState{
-		PLAYING,
-		PAUSE,
-		LOCATING
+		PLAYING, PAUSE, LOCATING
 	}
 
 	ScaleType[] scaleTypeArray = new ScaleType[]{
@@ -50,7 +49,7 @@ public class FrameAnimationView extends View implements OnGestureListener, OnTou
 	private ScaleType scaleType = ScaleType.FIT_CENTER;
 	
 	private Bitmap bitmap ;
-	
+
 	private static int frameDuration = 20;
 	
 	private int frameCount = -1;
@@ -61,7 +60,7 @@ public class FrameAnimationView extends View implements OnGestureListener, OnTou
 	
 	private Thread frameThread;
 	
-	private FramePlayState framePlayState = FramePlayState.PAUSE;
+	private FramePlayState framePlayState;
 	
 	private boolean repeat = true;
 	
@@ -118,7 +117,7 @@ public class FrameAnimationView extends View implements OnGestureListener, OnTou
 	 * @param formatFilePath 图片资源所在asset格式化文件路径，如image_%d.jpg
 	 */
 	public FrameAnimationView(Context context, String formatFilePath) {
-		this(context, formatFilePath, frameDuration,true);
+		this(context, formatFilePath, frameDuration, true);
 	}
 	/**
 	 * 
@@ -212,12 +211,15 @@ public class FrameAnimationView extends View implements OnGestureListener, OnTou
 		
 		pfd = new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG| Paint.FILTER_BITMAP_FLAG);
 
+		startFrameThread();
 		post(new Runnable() {
 			@Override
 			public void run() {
-				startFrameThread();
 				if(autoPlay){
 					play();
+				}
+				else {
+					pause();
 				}
 			}
 		});
@@ -291,6 +293,7 @@ public class FrameAnimationView extends View implements OnGestureListener, OnTou
 	
 	public void play(int delayTime){
 		if(!playEnable || isPlaying()) return;
+		framePlayState = FramePlayState.PLAYING;
 		this.delayTime = delayTime;
 
 		if(isPlayEnd()){
@@ -298,7 +301,6 @@ public class FrameAnimationView extends View implements OnGestureListener, OnTou
 		}
 
 		toFrame = -1;
-		framePlayState = FramePlayState.PLAYING;
 	}
 	
 	public void playToFrame(int toFrame){
@@ -336,7 +338,7 @@ public class FrameAnimationView extends View implements OnGestureListener, OnTou
 	}
 	
 	public boolean isPlaying(){
-		return framePlayState == FramePlayState.PLAYING || framePlayState == FramePlayState.LOCATING;
+		return framePlayState != null && (framePlayState == FramePlayState.PLAYING || framePlayState == FramePlayState.LOCATING);
 	}
 	
 	private boolean isPlayEnd() {
@@ -344,9 +346,8 @@ public class FrameAnimationView extends View implements OnGestureListener, OnTou
 	}
 	
 	public void pause(){
-		if(isPlaying()){
-			 framePlayState = FramePlayState.PAUSE;
-		}
+		framePlayState = FramePlayState.PAUSE;
+		Log.i(TAG, "pause :"+framePlayState);
 	}
 	
 	public void stop(){
@@ -355,14 +356,14 @@ public class FrameAnimationView extends View implements OnGestureListener, OnTou
 		updateUI();
 	}
 
-	private Runnable frameRunable = new Runnable() {
+	private Runnable frameRunnable = new Runnable() {
 		@Override
 		public void run() {
 			while(true){
+				Log.i(TAG, "thread :"+framePlayState);
 				if(releaseThread) return;
-				if(framePlayState == FramePlayState.PAUSE){
-					continue;
-				}
+				if(framePlayState == null) continue;
+				if(framePlayState == FramePlayState.PAUSE) continue;
 				if(framePlayState == FramePlayState.LOCATING){
 					if(bitmapIndex == toFrame){
 						continue;
@@ -386,6 +387,7 @@ public class FrameAnimationView extends View implements OnGestureListener, OnTou
 				}
 
 				updateUI();
+				Log.i(TAG, "updateUI:"+framePlayState);
 			}
 		}
 	};
@@ -396,7 +398,7 @@ public class FrameAnimationView extends View implements OnGestureListener, OnTou
 	private void startFrameThread(){
 		if(!releaseThread && frameThread != null) return ;
 		releaseThread = false;
-		frameThread = new Thread(frameRunable);
+		frameThread = new Thread(frameRunnable);
 		frameThread.start();
 	}
 	
@@ -463,11 +465,10 @@ public class FrameAnimationView extends View implements OnGestureListener, OnTou
 	}
 	
 	private void bitmapIndex_add(){
-		if(isPlayEnd() || repeat && bitmapIndex == toFrame){
+		if(isPlayEnd() && !repeat){
 			framePlayState = FramePlayState.PAUSE;
 			return;
 		}
-		
 		bitmapIndex = (++bitmapIndex) % frameCount;
 	}
 	
@@ -488,21 +489,21 @@ public class FrameAnimationView extends View implements OnGestureListener, OnTou
 					bitmap.recycle();
 					bitmap = null;
 				}
-				
+
 				String imagePath = String.format(formatFilePath, bitmapIndex);
 				bitmap = ImageReadUtils.getAssetBitmap(getContext() , imagePath, 1,
 						bitmapConfig != null ? bitmapConfig : Config.RGB_565);
-				
+
 				resetMatrix(bitmap);
-				
+
 				preFrame = bitmapIndex;
 			}
-			
+
 			canvas.save();
-			
+
 			canvas.setDrawFilter(pfd);
 			canvas.drawBitmap(bitmap, matrix, paint);
-			
+
 			canvas.restore();
 
 			fireFramePlayListener();
