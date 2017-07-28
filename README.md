@@ -1,11 +1,12 @@
-#FrameAnimationView
-#优势
+# FrameAnimationView
+
+# 优势
 可播放高分辨率序列帧图片，不会因图片过大而出现内存溢出问题，支持多种操作方式和控制接口
 
-#效果图
+# 效果图
 ![name](https://raw.githubusercontent.com/wcl9900/FrameAnimationView/master/frameanimationview.gif)
     
-#使用方式
+# 使用方式
     1.对象创建
        frameAnimationView = new FrameAnimationView(this, "image/pi_%d.jpg", 20, true);
        
