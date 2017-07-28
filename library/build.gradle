@@ -1,12 +1,13 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 21
     buildToolsVersion "23.0.3"
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 24
+        minSdkVersion 11
+        targetSdkVersion 11
         versionCode 1
         versionName "1.0"
     }
@@ -21,4 +22,18 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
+}
+android {
+    lintOptions {
+        abortOnError false
+    }
+}
+
+publish {
+    userOrg = 'wangchunlong'
+    groupId = 'com.wcl'
+    artifactId = 'frameanimationview'
+    publishVersion = '1.0.0'
+    desc = '可播放高分辨率序列帧图片，不会因图片过大而出现内存溢出问题，支持多种操作方式和控制接口'
+    website = 'https://github.com/wcl9900/FrameAnimationView'
 }
