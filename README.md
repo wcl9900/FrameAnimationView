@@ -7,6 +7,12 @@
 ![name](https://raw.githubusercontent.com/wcl9900/FrameAnimationView/master/frameanimationview.gif)
     
 # 使用方式
+    Gradle
+    repositories {
+        jcenter()
+    }
+    compile 'com.wcl:frameanimationview:1.0.0'
+    
     1.对象创建
        frameAnimationView = new FrameAnimationView(this, "image/pi_%d.jpg", 20, true);
        
